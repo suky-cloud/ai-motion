@@ -6,13 +6,16 @@
 
 - Google 命令行工具 15859902 已下载并解压到用户 Android/Sdk 目录。
 - 下载 SHA-256 已与 Google 下载页核对：`90ae805d20434428bffcb699c290860f19bb5f66a67e6b330067e3de801fb04a`。
-- Microsoft JDK 17.0.21 安装程序已校验并启动，等待 Windows 管理员授权；尚未确认安装完成。
-- SDK 许可尚未接受，platform-tools、Android platform 36、build-tools 36.0.0 尚未安装。
+- Microsoft JDK 17.0.21.0.2 已安装，项目环境脚本执行后已核实 `java -version`。
+- 用户已明确同意 SDK 许可，安装工具已确认许可接受完成。
+- platform-tools 37.0.1（adb 1.0.41）、Android platform 36、build-tools 36.0.0 已安装，环境检查全部通过。
+- Windows 已通过 WPD 识别用户连接的荣耀 Magic7 Pro，但 `adb devices -l` 列表仍为空，等待手机启用 USB 调试接口；尚未读取到系统版本。
 - 安装缓存位于被 Git 忽略的 `.local/`，不会上传到开源仓库。
+- 系统安装等待期间额外准备了微软官方便携 JDK 17，并核验官方 SHA-256；系统安装随后成功，实际环境使用系统 JDK 17。
 
 依据：[Google 官方下载页](https://developer.android.com/studio)、[Expo Android 环境说明](https://docs.expo.dev/workflow/android-studio-emulator/)。当前官方命令行包提示 sdkmanager 已弃用、建议迁移 Android CLI；后续工具脚本需跟随新 CLI 适配。
 
-## 安装完成后的使用方式
+## 使用方式
 
 在项目根目录打开 PowerShell：
 
@@ -30,4 +33,4 @@
 3. 解锁手机，确认 USB 调试授权提示。
 4. 安装 adb 后检查 `adb devices -l`，状态应为 `device`；`unauthorized` 表示需在手机确认。
 
-不需要开启 OEM 解锁或解锁 bootloader。设备识别成功后再核实型号、系统及摄像头表现。当前未运行手机构建、摄像头或推理测试。
+不需要开启 OEM 解锁或解锁 bootloader。Windows 识别到文件传输设备不等于 ADB 调试接口已可用；若 adb 列表为空，应先确认手机 USB 调试设置，再检查厂商官方驱动。当前未运行手机构建、摄像头或推理测试。

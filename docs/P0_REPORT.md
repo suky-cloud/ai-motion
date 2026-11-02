@@ -9,14 +9,14 @@
 - 原始开发任务书保留不变。
 - 已阅读三个指定仓库的核心文件、依赖和许可证，记录研究快照与兼容风险，见 TECHNICAL_RESEARCH.md。
 - 已实现同步帧门控契约，7 项自动化测试通过：限帧、失败释放、暂停恢复、时间戳过滤、会话重置、参数校验、异步误用检测。
-- 已下载并校验 Google Android 命令行工具，提供环境激活及检查脚本。JDK 17 安装等待管理员授权，SDK 组件安装等待用户接受许可，详见 ANDROID_SETUP.md；环境尚未就绪。
+- Android 基础工具环境已准备：JDK 17.0.21、命令行工具、adb 37.0.1、platform 36、build-tools 36.0.0，检查全部通过；提供当前会话环境激活脚本。Windows 已识别荣耀 Magic7 Pro，但 adb 列表为空，调试连接尚未就绪，详见 ANDROID_SETUP.md。
 
 ## 环境初检
 
 - Windows；Git 2.55.0.windows.3、GitHub CLI 2.97.0 可用。
 - PATH 中找到 Node.js 和 Microsoft JDK 25；尚未验证与未来移动端构建工具链的兼容性。
-- Node.js 24.22.1、pnpm 11.25.0 可用。PATH 中未找到 npm 和 adb；未检测到 ANDROID_HOME、ANDROID_SDK_ROOT、JAVA_HOME 环境变量，默认 LocalAppData/Android 路径未发现。这不等于已确认软件未安装。
-- 用户确认使用 Android；型号、连接设备与模拟器待确认。当前设备枚举未发现名称含 Android / ADB / iPhone 的设备；无 adb，无法可靠判定真机连接。Windows 本机无法运行 Xcode。
+- Node.js 24.22.1、pnpm 11.25.0 可用。使用 scripts/android-env.ps1 可在当前 PowerShell 激活 JDK 17、SDK 和 adb；不改变全局默认 JDK。
+- 用户确认使用荣耀 Magic7 Pro；WPD 枚举已识别，尚无 adb 调试连接。系统版本待读取。Windows 本机无法运行 Xcode。
 - GitHub CLI 已验证登录账号 suky-cloud；远程仓库目标为 https://github.com/suky-cloud/ai-motion。
 
 ## 尚未完成
