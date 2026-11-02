@@ -14,7 +14,7 @@
 - PATH 中找到 Node.js 和 Microsoft JDK 25；尚未验证与未来移动端构建工具链的兼容性。
 - PATH 中未找到 npm 和 adb；未检测到 ANDROID_HOME、ANDROID_SDK_ROOT、JAVA_HOME 环境变量。这不等于已确认软件未安装。
 - 未确认目标手机平台、连接设备或模拟器；Windows 本机无法运行 Xcode。
-- GitHub 连接器可识别账号，本机 GitHub CLI 凭据失效；公开发布需恢复登录。
+- GitHub CLI 已验证登录账号 suky-cloud；远程仓库目标为 https://github.com/suky-cloud/ai-motion。
 
 ## 尚未完成
 
