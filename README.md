@@ -17,6 +17,7 @@
 - [完整开发任务书](AI_Motion_P0_Codex_开发任务书.md)
 - [第一阶段工作清单](docs/ROADMAP.md)
 - [源码调研与 Android 验证路线](docs/TECHNICAL_RESEARCH.md)
+- [Windows Android 环境准备](docs/ANDROID_SETUP.md)
 - [当前完成情况](docs/P0_REPORT.md)
 - [视觉运行时决策记录（待验证）](docs/adr/0001-vision-runtime.md)
 - [测试计划与结果](docs/TEST_PLAN.md)

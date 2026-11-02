@@ -31,6 +31,7 @@ local.properties
 .agents/
 .aws/
 .idea/
+.local/
 .vscode/
 .DS_Store
 Thumbs.db
