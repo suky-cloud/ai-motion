@@ -9,14 +9,14 @@
 - 原始开发任务书保留不变。
 - 已阅读三个指定仓库的核心文件、依赖和许可证，记录研究快照与兼容风险，见 TECHNICAL_RESEARCH.md。
 - 已实现同步帧门控契约，7 项自动化测试通过：限帧、失败释放、暂停恢复、时间戳过滤、会话重置、参数校验、异步误用检测。
-- Android 基础工具环境已准备：JDK 17.0.21、命令行工具、adb 37.0.1、platform 36、build-tools 36.0.0，检查全部通过；提供当前会话环境激活脚本。Windows 已识别荣耀 Magic7 Pro，但 adb 列表为空，调试连接尚未就绪，详见 ANDROID_SETUP.md。
+- Android 基础工具环境已准备：JDK 17.0.21、命令行工具、adb 37.0.1、platform 36、build-tools 36.0.0，检查全部通过；提供当前会话环境激活脚本。荣耀 Magic7 Pro 已完成 adb 调试授权并成功执行设备信息查询，详见 ANDROID_SETUP.md。
 
 ## 环境初检
 
 - Windows；Git 2.55.0.windows.3、GitHub CLI 2.97.0 可用。
 - PATH 中找到 Node.js 和 Microsoft JDK 25；尚未验证与未来移动端构建工具链的兼容性。
 - Node.js 24.22.1、pnpm 11.25.0 可用。使用 scripts/android-env.ps1 可在当前 PowerShell 激活 JDK 17、SDK 和 adb；不改变全局默认 JDK。
-- 用户确认使用荣耀 Magic7 Pro；WPD 枚举已识别，尚无 adb 调试连接。系统版本待读取。Windows 本机无法运行 Xcode。
+- 真机：荣耀 Magic7 Pro（HONOR PTP-AN10），Android 17 / API 37，arm64-v8a；adb 状态 device，系统声明前置摄像头可用。Windows 本机无法运行 Xcode。
 - GitHub CLI 已验证登录账号 suky-cloud；远程仓库目标为 https://github.com/suky-cloud/ai-motion。
 
 ## 尚未完成

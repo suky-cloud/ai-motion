@@ -71,4 +71,4 @@ Frame 的原始 timestamp 单位必须在适配时核查并转换成毫秒，不
 4. 连续输出 33 个关键点；离开画面清空；验证镜像、旋转、裁剪与所有资源释放。
 5. 记录设备、分辨率、真实 FPS、转换及推理耗时、5 分钟稳定性。通过后再开展正式姿态与游戏集成。
 
-后续环境准备已安装 Android SDK / adb / JDK 17 并通过工具检查；Windows 已识别荣耀 Magic7 Pro，但 ADB 设备列表仍为空，原生 Spike 未运行。详见 ANDROID_SETUP.md。
+后续环境准备已安装 Android SDK / adb / JDK 17 并通过工具检查；荣耀 Magic7 Pro（Android 17 / API 37，arm64-v8a）已完成 adb 授权并成功查询设备信息。原生 Spike 未运行。详见 ANDROID_SETUP.md。
