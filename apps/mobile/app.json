@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "AI Motion",
+    "slug": "ai-motion",
+    "scheme": "aimotion",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.sukycloud.aimotion",
+      "permissions": ["android.permission.CAMERA"],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "ios": {
+      "infoPlist": { "NSCameraUsageDescription": "AI Motion 使用摄像头在本机进行运动互动。" }
+    }
+  }
+}

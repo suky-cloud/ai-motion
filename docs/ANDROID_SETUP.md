@@ -9,6 +9,7 @@
 - Microsoft JDK 17.0.21.0.2 已安装，项目环境脚本执行后已核实 `java -version`。
 - 用户已明确同意 SDK 许可，安装工具已确认许可接受完成。
 - platform-tools 37.0.1（adb 1.0.41）、Android platform 36、build-tools 36.0.0 已安装，环境检查全部通过。
+- 最小应用实际构建另安装 Android platform 37.0、build-tools 37.0.0、NDK 27.1.12297006、CMake 3.22.1，完成 arm64 调试包编译和真机安装。
 - 荣耀 Magic7 Pro 已通过 USB 调试授权，`adb devices -l` 状态为 `device`，Windows 已出现 ADB Interface。
 - 实际读取：HONOR PTP-AN10，Android 17 / API 37，CPU ABI 为 arm64-v8a；系统声明支持前置摄像头。未在仓库记录设备序列号。
 - 安装缓存位于被 Git 忽略的 `.local/`，不会上传到开源仓库。
@@ -34,4 +35,4 @@
 3. 解锁手机，确认 USB 调试授权提示。
 4. 安装 adb 后检查 `adb devices -l`，状态应为 `device`；`unauthorized` 表示需在手机确认。
 
-不需要开启 OEM 解锁或解锁 bootloader。Windows 识别到文件传输设备不等于 ADB 调试接口已可用；若 adb 列表为空，应先确认手机 USB 调试设置，再检查厂商官方驱动。当前已通过 adb shell 读取设备信息，尚未运行手机应用构建、摄像头预览或推理测试。
+不需要开启 OEM 解锁或解锁 bootloader。Windows 识别到文件传输设备不等于 ADB 调试接口已可用；若 adb 列表为空，应先确认手机 USB 调试设置，再检查厂商官方驱动。当前已完成应用构建、安装及首轮前置预览 / 暂停 / 恢复 / 结束测试；姿态推理尚未接入。

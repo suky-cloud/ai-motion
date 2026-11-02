@@ -19,4 +19,10 @@
 
 推荐 Expo Development Build + VisionCamera 5.2.4 + 自有 Nitro 原生 MediaPipe 适配层，见 [源码核查记录](../TECHNICAL_RESEARCH.md)。已确认 V5 可取得 ImageProxy，但 MPImage 转换、线程与完整 Expo 依赖组合尚未构建验证。当前不引入旧版 FrameProcessorPlugin 封装。
 
-已增加独立帧门控契约及 7 项通过的合成输入测试。没有引入相机 SDK、模型或第三方源代码，不声称任何原生依赖组合已兼容。
+已增加独立帧门控契约及 7 项通过的合成输入测试。相机 SDK 已进入下述真机验证基线，MediaPipe SDK 和模型仍未引入。
+
+## 2026-11-02 相机基线更新
+
+已引入 Expo 58.0.22 / RN 0.88.1 / VisionCamera 5.2.4 / Nitro Modules 0.37.1 / Nitro Image 0.15.2，并在 Windows 短真实路径完成 arm64 Android 构建。荣耀 Magic7 Pro 的前置预览和暂停 / 恢复 / 结束经用户确认正常，日志确认启动与关闭。
+
+本次只证明相机链路，仍未引入 MediaPipe SDK 和模型。原生帧到 MPImage、线程、模型版本、许可证和坐标变换继续以最小 Spike 验证。

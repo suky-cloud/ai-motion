@@ -58,3 +58,7 @@ private-data/
 *.task
 *.tflite
 *.onnx
+
+# Expo-generated projects; regenerate with expo prebuild.
+/apps/mobile/android/
+/apps/mobile/ios/

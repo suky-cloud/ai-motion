@@ -9,4 +9,4 @@
 5. 不提交凭据、摄像头原始数据、个人训练记录或未经许可的模型和素材。
 6. 引入第三方依赖时核查版本兼容性和许可证，提交锁文件。
 
-独立帧契约测试使用 Node.js 24+：`node --test tests/*.test.ts`，不需要安装依赖。手机应用尚未建立构建工具链。
+独立帧契约测试使用 Node.js 24+：`node --test tests/*.test.ts`，不需要安装依赖。手机应用使用 Expo Development Build，类型检查和 Windows 构建要求见 apps/mobile/README.md。

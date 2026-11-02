@@ -1,0 +1,17 @@
+# 手机摄像头基线依赖
+
+初次集成日期：2026-11-02。精确解析结果见 `apps/mobile/pnpm-lock.yaml`，不对该组合的其他设备兼容性作保证。
+
+| 直接依赖 | 版本 | 用途 | package 声明的许可证 |
+| --- | --- | --- | --- |
+| expo | 58.0.22 | 应用与原生工程生成 | MIT |
+| expo-dev-client | 58.0.18（锁文件解析值） | 本机开发构建 | MIT |
+| react | 19.3.0 | UI | MIT |
+| react-native | 0.88.1 | Android 原生应用 | MIT |
+| react-native-vision-camera | 5.2.4 | 前置摄像头与生命周期 | MIT |
+| react-native-nitro-modules | 0.37.1 | V5 原生绑定 | MIT |
+| react-native-nitro-image | 0.15.2 | VisionCamera 必需依赖 | MIT |
+
+React / React Native 版本依据 Expo 官方 blank-typescript 模板 58.0.31 的依赖声明。`expo install --check` 已通过。上游源码和许可随各自包保留，不把第三方代码重新许可为本项目 MIT。
+
+当前没有引入 MediaPipe SDK、模型或训练素材。模型许可与固定版本的核查仍是下一技术验证阶段的工作。

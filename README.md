@@ -2,7 +2,7 @@
 
 通过手机摄像头识别人体姿态，用身体移动完成简单运动互动。
 
-**当前状态：已完成首轮源码调研和帧处理契约测试，尚无可运行的手机应用。** Android 为首个验证平台，原生接入和真机验证尚未完成。
+**当前状态：最小 Android 摄像头应用已构建并安装，荣耀 Magic7 Pro 真机预览、暂停、恢复和结束通过首轮验证。** 姿态识别、骨骼与游戏尚未接入。
 
 ## P0：Motion Catch
 
@@ -18,6 +18,8 @@
 - [第一阶段工作清单](docs/ROADMAP.md)
 - [源码调研与 Android 验证路线](docs/TECHNICAL_RESEARCH.md)
 - [Windows Android 环境准备](docs/ANDROID_SETUP.md)
+- [手机应用运行说明](apps/mobile/README.md)
+- [手机基线依赖](docs/DEPENDENCIES.md)
 - [当前完成情况](docs/P0_REPORT.md)
 - [视觉运行时决策记录（待验证）](docs/adr/0001-vision-runtime.md)
 - [测试计划与结果](docs/TEST_PLAN.md)
@@ -25,11 +27,13 @@
 
 ## 运行与设备要求
 
-当前包含项目文档和独立帧处理契约，可用 Node.js 24+ 执行 `node --test tests/*.test.ts`，无需安装依赖。手机应用尚无启动或构建命令，完成原生验证并锁定依赖后补充。
+纯帧契约测试可用 Node.js 24+ 执行 `node --test tests/*.test.ts`，无需安装依赖。
 
-候选方案是 React Native + Expo Development Build、VisionCamera 和原生 MediaPipe Pose；这些组件的组合尚未验证，不以 Expo Go 或浏览器 Demo 代替手机验收。设备平台待确认，Android 需要匹配的 JDK / Android SDK，iOS 构建需要 macOS / Xcode 或另行验证的构建环境。
+手机应用位于 `apps/mobile`，使用 pnpm 11.25.0。先激活 `scripts/android-env.ps1`，进入应用目录运行 `pnpm install --frozen-lockfile`、`pnpm exec expo prebuild --platform android --no-install`、`pnpm exec expo run:android --device`。Windows 必须使用短、无空格的真实项目路径，详见手机应用说明。
 
-应用实现后须主动申请摄像头权限，处理拒绝、暂停、退出和资源释放。当前尚未实现权限流程。
+摄像头基线使用 Expo 58.0.22、React Native 0.88.1、VisionCamera 5.2.4 与 Nitro Modules 0.37.1，已完成本机 arm64 Android 构建及首轮手机预览验证。原生 MediaPipe Pose 尚未接入。Android 使用 JDK 17；本次实际构建还安装了 SDK / Build Tools 37、NDK 27.1.12297006 与 CMake 3.22.1。iOS 尚未验证。
+
+应用主动申请相机权限，提供拒绝提示与系统设置入口；暂停或进入后台停止相机，结束或返回时卸载相机。当前真机已验证授权、预览、暂停、恢复和结束；拒绝权限、后台与返回键完整测试仍待执行。
 
 ## 开源
 
