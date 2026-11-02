@@ -12,7 +12,7 @@
 
 - [ ] 确认目标手机平台、型号和可连接真机。
 - [ ] 检查并准备包管理器、Android SDK / JDK 或 iOS 构建环境。
-- [ ] 阅读开发书指定的三个仓库的 README、核心源码、依赖及许可证。
+- [x] 阅读开发书指定的三个仓库的 README、核心源码、依赖及许可证，记录于 TECHNICAL_RESEARCH.md。
 - [ ] 核实当前 VisionCamera 帧 API、Expo Development Build 和原生模型集成路径。
 - [ ] 比较原生与 Web 技术验证路线，补齐 ADR 中的版本、依据和限制。
 - [ ] 完成最小帧输入 Spike，再建立正式手机应用。

@@ -1,6 +1,6 @@
 # ADR 0001：摄像头与视觉运行时
 
-状态：待研究，未做最终选择。
+状态：首轮源码研究完成，推荐路线待 Android 原生 Spike 验证。
 
 ## 约束
 
@@ -17,4 +17,6 @@
 
 实际阅读开发书指定仓库并记录核心文件、版本和许可；用最小 Spike 验证帧输入及资源生命周期；记录真机性能后再确定实施路线。
 
-本次初始化没有引入相机 SDK、模型或第三方源代码，不声称任何依赖组合已兼容。
+推荐 Expo Development Build + VisionCamera 5.2.4 + 自有 Nitro 原生 MediaPipe 适配层，见 [源码核查记录](../TECHNICAL_RESEARCH.md)。已确认 V5 可取得 ImageProxy，但 MPImage 转换、线程与完整 Expo 依赖组合尚未构建验证。当前不引入旧版 FrameProcessorPlugin 封装。
+
+已增加独立帧门控契约及 7 项通过的合成输入测试。没有引入相机 SDK、模型或第三方源代码，不声称任何原生依赖组合已兼容。
