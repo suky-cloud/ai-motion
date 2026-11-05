@@ -26,3 +26,9 @@
 已引入 Expo 58.0.22 / RN 0.88.1 / VisionCamera 5.2.4 / Nitro Modules 0.37.1 / Nitro Image 0.15.2，并在 Windows 短真实路径完成 arm64 Android 构建。荣耀 Magic7 Pro 的前置预览和暂停 / 恢复 / 结束经用户确认正常，日志确认启动与关闭。
 
 本次只证明相机链路，仍未引入 MediaPipe SDK 和模型。原生帧到 MPImage、线程、模型版本、许可证和坐标变换继续以最小 Spike 验证。
+
+## 2026-11-05 平台无关运动输入
+
+已实现独立 motion-core / game-core，并以 source=simulation 的合成 PoseFrame 驱动模拟体验，source=pose 保留给未来适配器。游戏会拒绝来源与当前模式不匹配的输入；模拟界面明确标注来源，不以合成骨骼代表真实模型输出。
+
+变换约定、250ms 新鲜度、全身门控与控制失效策略记录于 MOTION_CATCH.md。相关纯逻辑与整轮集成测试通过，真实帧输入与显示对齐尚未验证。未改变原生视觉运行时方向。

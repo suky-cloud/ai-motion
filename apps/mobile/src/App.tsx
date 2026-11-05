@@ -1,127 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { AppState, BackHandler, Linking, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { Camera, useCameraPermission } from 'react-native-vision-camera';
+import { BackHandler, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import CameraScreen from './camera/CameraScreen';
+import MotionCatchScreen from './games/MotionCatchScreen';
 
 export default function App() {
-  const { hasPermission, canRequestPermission, requestPermission } = useCameraPermission();
-  const [opened, setOpened] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [foreground, setForeground] = useState(AppState.currentState === 'active');
-  const [error, setError] = useState<string | null>(null);
-  const [denied, setDenied] = useState(false);
-  const [previewReady, setPreviewReady] = useState(false);
-
-  useEffect(() => {
-    const listener = AppState.addEventListener('change', state => setForeground(state === 'active'));
-    return () => listener.remove();
-  }, []);
-
+  const [screen, setScreen] = useState<'home' | 'camera' | 'game'>('home');
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (!opened) return false;
-      setOpened(false);
-      setPaused(false);
-      setPreviewReady(false);
+      if (screen === 'home') return false;
+      setScreen('home');
       return true;
     });
     return () => listener.remove();
-  }, [opened]);
-
-  async function start() {
-    setError(null);
-    if (!hasPermission && !canRequestPermission) {
-      setDenied(true);
-      return;
-    }
-    try {
-      const granted = hasPermission || await requestPermission();
-      setDenied(!granted);
-      if (granted) {
-        setPaused(false);
-        setPreviewReady(false);
-        setOpened(true);
-      }
-    } catch {
-      setError('无法申请摄像头权限，请检查系统设置后重试。');
-    }
-  }
-
-  const active = opened && !paused && foreground && hasPermission && !error;
-
+  }, [screen]);
+  if (screen === 'camera') return <CameraScreen onClose={() => setScreen('home')} />;
+  if (screen === 'game') return <MotionCatchScreen onClose={() => setScreen('home')} />;
   return (
-    <SafeAreaView style={styles.page}>
-      <StatusBar barStyle="light-content" />
-      <View style={styles.header}>
-        <Text style={styles.eyebrow}>AI MOTION · P0</Text>
-        <Text style={styles.title}>让身体成为控制器</Text>
-        <Text style={styles.subtitle}>第一步：验证前置摄像头</Text>
-      </View>
-      <View style={styles.preview}>
-        {opened && hasPermission ? (
-          <Camera
-            style={StyleSheet.absoluteFill}
-            device="front"
-            isActive={active}
-            onStarted={() => console.info('[AI Motion] camera started')}
-            onStopped={() => { setPreviewReady(false); console.info('[AI Motion] camera stopped'); }}
-            onPreviewStarted={() => { setPreviewReady(true); console.info('[AI Motion] preview started'); }}
-            onError={cameraError => setError(cameraError.message)}
-          />
-        ) : (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderTitle}>准备好，站到镜头前</Text>
-            <Text style={styles.hint}>点击下方按钮开启摄像头</Text>
-          </View>
-        )}
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{error ? '摄像头异常' : !opened ? '摄像头未开启' : !active ? '摄像头已暂停' : previewReady ? '前置摄像头 · 预览中' : '正在启动摄像头'}</Text>
+    <View style={styles.page}>
+      <StatusBar barStyle="dark-content" />
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.brand}>AI Motion</Text>
+        <View style={styles.intro}>
+          <Text style={styles.title}>左右移动，{ '\n' }接住目标。</Text>
+          <Text style={styles.description}>一轮 30 秒。左右移动，让光标跟上你。</Text>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <Text style={styles.privacy}>画面仅在本机预览，不录制、不上传</Text>
-        <Text style={styles.hint}>姿态识别尚未接入</Text>
-        {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
-        {denied && <Text accessibilityRole="alert" style={styles.error}>需要摄像头权限。若系统不再弹窗，请前往设置开启。</Text>}
-        {!opened ? (
-          <Pressable accessibilityRole="button" style={styles.primary} onPress={start}>
-            <Text style={styles.primaryText}>开启摄像头</Text>
+        <View style={styles.court} accessibilityLabel="Motion Catch 练习示意图">
+          <View style={styles.track} />
+          <View style={styles.cursor}><View style={styles.cursorDot} /></View>
+          <View style={styles.target}><View style={styles.targetDot} /></View>
+          <Text style={styles.courtCaption}>Motion Catch</Text>
+        </View>
+        <View style={styles.action}>
+          <Text style={styles.sectionTitle}>先试一轮</Text>
+          <Text style={styles.description}>拖动手指体验玩法，不需要开启摄像头。</Text>
+          <Pressable accessibilityRole="button" style={({ pressed }) => [styles.primary, pressed && styles.pressed]} onPress={() => setScreen('game')}>
+            <Text style={styles.primaryText}>开始模拟体验</Text>
           </Pressable>
-        ) : (
-          <View style={styles.row}>
-            <Pressable accessibilityRole="button" style={[styles.primary, styles.flex]} onPress={() => { if (error) { setError(null); setPaused(false); } else { setPaused(value => !value); } }}>
-              <Text style={styles.primaryText}>{error ? '重试摄像头' : paused ? '恢复预览' : '暂停预览'}</Text>
-            </Pressable>
-            <Pressable accessibilityRole="button" style={styles.secondary} onPress={() => { setOpened(false); setPaused(false); setPreviewReady(false); setError(null); }}>
-              <Text style={styles.secondaryText}>结束</Text>
-            </Pressable>
-          </View>
-        )}
-        {denied && <Pressable accessibilityRole="button" onPress={() => Linking.openSettings().catch(() => setError('无法打开设置，请手动前往系统应用权限页。'))}><Text style={styles.settings}>前往系统设置</Text></Pressable>}
-      </View>
-    </SafeAreaView>
+          <Text style={styles.note}>当前是模拟输入，人体识别还在接入中。</Text>
+        </View>
+        <Pressable accessibilityRole="button" style={styles.cameraLink} onPress={() => setScreen('camera')}>
+          <View><Text style={styles.sectionTitle}>检查摄像头</Text><Text style={styles.note}>前置预览与权限设置</Text></View>
+          <Text style={styles.linkText}>打开</Text>
+        </Pressable>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#101a20', paddingTop: StatusBar.currentHeight ?? 0 },
-  header: { padding: 24, gap: 8 },
-  eyebrow: { color: '#74e3bd', fontSize: 12, fontWeight: '700', letterSpacing: 2 },
-  title: { color: '#f5f8fa', fontSize: 27, fontWeight: '700' },
-  subtitle: { color: '#a4b5bf', fontSize: 14 },
-  preview: { flex: 1, marginHorizontal: 20, borderRadius: 24, overflow: 'hidden', backgroundColor: '#1d303a' },
-  placeholder: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
-  placeholderTitle: { color: '#edf4f6', fontSize: 20, fontWeight: '600' },
-  hint: { color: '#a4b5bf', fontSize: 13, textAlign: 'center' },
-  badge: { position: 'absolute', top: 16, left: 16, borderRadius: 20, paddingVertical: 8, paddingHorizontal: 12, backgroundColor: '#101a20cc' },
-  badgeText: { color: '#bdf5df', fontSize: 12 },
-  footer: { padding: 24, gap: 12 },
-  privacy: { color: '#d5e4ea', textAlign: 'center', fontSize: 13 },
-  primary: { backgroundColor: '#86efc5', minHeight: 52, borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
-  primaryText: { color: '#102d23', fontSize: 16, fontWeight: '700' },
-  row: { flexDirection: 'row', gap: 12 },
-  flex: { flex: 1 },
-  secondary: { minHeight: 52, paddingHorizontal: 26, borderRadius: 16, borderWidth: 1, borderColor: '#52707f', alignItems: 'center', justifyContent: 'center' },
-  secondaryText: { color: '#e5edf2', fontSize: 16 },
-  error: { color: '#ffb4a9', fontSize: 13, textAlign: 'center' },
-  settings: { color: '#86efc5', textAlign: 'center', padding: 8 },
+  page: { flex: 1, backgroundColor: '#F3F6F8', paddingTop: StatusBar.currentHeight ?? 0 },
+  content: { padding: 24, paddingBottom: 40, gap: 24, maxWidth: 560, width: '100%', alignSelf: 'center' },
+  brand: { fontSize: 19, fontWeight: '700', color: '#20364A' },
+  intro: { paddingTop: 12, gap: 14 },
+  title: { fontSize: 32, fontWeight: '700', lineHeight: 43, letterSpacing: -0.5, color: '#20364A' },
+  description: { fontSize: 15, lineHeight: 24, color: '#526677' },
+  court: { height: 190, borderRadius: 12, backgroundColor: '#DFEAF0', justifyContent: 'center', overflow: 'hidden' },
+  track: { position: 'absolute', left: 28, right: 28, height: 1, backgroundColor: '#9EB5C4' },
+  cursor: { position: 'absolute', left: '23%', width: 45, height: 45, borderRadius: 23, borderWidth: 1, borderColor: '#285F85', alignItems: 'center', justifyContent: 'center' },
+  cursorDot: { width: 15, height: 15, borderRadius: 8, backgroundColor: '#285F85' },
+  target: { position: 'absolute', right: '20%', width: 58, height: 58, borderRadius: 29, borderWidth: 2, borderColor: '#D94A60', alignItems: 'center', justifyContent: 'center' },
+  targetDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#D94A60' },
+  courtCaption: { position: 'absolute', left: 20, bottom: 16, color: '#365970', fontSize: 14, fontWeight: '600' },
+  action: { gap: 10 },
+  sectionTitle: { color: '#20364A', fontSize: 18, fontWeight: '600' },
+  primary: { marginTop: 8, minHeight: 54, backgroundColor: '#285F85', alignItems: 'center', justifyContent: 'center', borderRadius: 12 },
+  primaryText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  pressed: { opacity: 0.8 },
+  note: { fontSize: 13, lineHeight: 20, color: '#526677' },
+  cameraLink: { paddingVertical: 20, borderTopWidth: 1, borderColor: '#CFDCE4', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 72 },
+  linkText: { color: '#285F85', fontSize: 15, fontWeight: '600', padding: 12 },
 });
