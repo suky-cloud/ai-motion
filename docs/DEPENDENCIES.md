@@ -15,3 +15,5 @@
 React / React Native 版本依据 Expo 官方 blank-typescript 模板 58.0.31 的依赖声明。`expo install --check` 已通过。上游源码和许可随各自包保留，不把第三方代码重新许可为本项目 MIT。
 
 当前没有引入 MediaPipe SDK、模型或训练素材。模型许可与固定版本的核查仍是下一技术验证阶段的工作。
+
+2026-11-05：基础框架未新增 JS 依赖。为对齐 debug / release 的原生依赖图，Expo 本地配置插件对共有依赖启用 Gradle 的 shouldResolveConsistentlyWith 机制，避免 release 回落到本次官方仓库中缺失的旧版组件；不更换 Expo、RN、VisionCamera 或 Nitro 的版本。以后升级这些模块时需一并复核该约束。

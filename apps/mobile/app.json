@@ -3,11 +3,13 @@
     "name": "AI Motion",
     "slug": "ai-motion",
     "scheme": "aimotion",
-    "version": "0.1.0",
+    "plugins": ["./plugins/withAndroidBaseline"],
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "android": {
       "package": "com.sukycloud.aimotion",
+      "versionCode": 2,
       "permissions": ["android.permission.CAMERA"],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",

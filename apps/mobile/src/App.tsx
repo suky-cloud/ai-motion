@@ -1,20 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer } from 'react';
 import { BackHandler, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import CameraScreen from './camera/CameraScreen';
 import MotionCatchScreen from './games/MotionCatchScreen';
+import ScreenBoundary from './application/ScreenBoundary';
+import { appReducer, initialAppState } from './application/state';
+import type { LastRound } from './application/state';
+import type { RoundResult } from '../../../packages/session-core/src/session.ts';
+import Button from './ui/ActionButton';
+import { theme } from './ui/theme';
 
 export default function App() {
-  const [screen, setScreen] = useState<'home' | 'camera' | 'game'>('home');
+  const [state, dispatch] = useReducer(appReducer, initialAppState);
+  const home = useCallback(() => dispatch({ type: 'home' }), []);
+  const recordResult = useCallback((result: RoundResult) => {
+    dispatch({ type: 'record-result', result, completedAt: new Date().toISOString() });
+  }, []);
   useEffect(() => {
     const listener = BackHandler.addEventListener('hardwareBackPress', () => {
-      if (screen === 'home') return false;
-      setScreen('home');
+      if (state.route.name === 'home') return false;
+      home();
       return true;
     });
     return () => listener.remove();
-  }, [screen]);
-  if (screen === 'camera') return <CameraScreen onClose={() => setScreen('home')} />;
-  if (screen === 'game') return <MotionCatchScreen onClose={() => setScreen('home')} />;
+  }, [state.route.name, home]);
+  const screen = state.route.name === 'camera' ? <CameraScreen onClose={home} /> :
+    state.route.name === 'simulation' ? <MotionCatchScreen onClose={home} onResult={recordResult} /> :
+      <HomeScreen lastRound={state.lastRound} onSimulation={() => dispatch({ type: 'open', screen: 'simulation' })}
+        onCamera={() => dispatch({ type: 'open', screen: 'camera' })} onClear={() => dispatch({ type: 'clear-result' })} />;
+  return <ScreenBoundary key={`${state.route.name}-${state.nextRouteKey}`} onRecover={home}>{screen}</ScreenBoundary>;
+}
+
+function HomeScreen({ lastRound, onSimulation, onCamera, onClear }: {
+  lastRound: LastRound | null; onSimulation: () => void; onCamera: () => void; onClear: () => void;
+}) {
   return (
     <View style={styles.page}>
       <StatusBar barStyle="dark-content" />
@@ -33,12 +51,16 @@ export default function App() {
         <View style={styles.action}>
           <Text style={styles.sectionTitle}>先试一轮</Text>
           <Text style={styles.description}>拖动手指体验玩法，不需要开启摄像头。</Text>
-          <Pressable accessibilityRole="button" style={({ pressed }) => [styles.primary, pressed && styles.pressed]} onPress={() => setScreen('game')}>
-            <Text style={styles.primaryText}>开始模拟体验</Text>
-          </Pressable>
+          <Button title="开始模拟体验" onPress={onSimulation} />
           <Text style={styles.note}>当前是模拟输入，人体识别还在接入中。</Text>
         </View>
-        <Pressable accessibilityRole="button" style={styles.cameraLink} onPress={() => setScreen('camera')}>
+        {lastRound && <View style={styles.lastRound}>
+          <Text style={styles.sectionTitle}>刚才那一轮</Text>
+          <Text style={styles.description}>{lastRound.result.source === 'simulation' ? '模拟体验' : '身体互动'}接住 {lastRound.result.hits} 次，得分 {lastRound.result.score}。</Text>
+          <Text style={styles.note}>只在本次打开期间保留，不上传。</Text>
+          <Pressable accessibilityRole="button" onPress={onClear} style={styles.clear}><Text style={styles.linkText}>清除本次结果</Text></Pressable>
+        </View>}
+        <Pressable accessibilityRole="button" style={styles.cameraLink} onPress={onCamera}>
           <View><Text style={styles.sectionTitle}>检查摄像头</Text><Text style={styles.note}>前置预览与权限设置</Text></View>
           <Text style={styles.linkText}>打开</Text>
         </Pressable>
@@ -48,7 +70,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: '#F3F6F8', paddingTop: StatusBar.currentHeight ?? 0 },
+  page: { flex: 1, backgroundColor: theme.colors.background, paddingTop: StatusBar.currentHeight ?? 0 },
   content: { padding: 24, paddingBottom: 40, gap: 24, maxWidth: 560, width: '100%', alignSelf: 'center' },
   brand: { fontSize: 19, fontWeight: '700', color: '#20364A' },
   intro: { paddingTop: 12, gap: 14 },
@@ -63,9 +85,8 @@ const styles = StyleSheet.create({
   courtCaption: { position: 'absolute', left: 20, bottom: 16, color: '#365970', fontSize: 14, fontWeight: '600' },
   action: { gap: 10 },
   sectionTitle: { color: '#20364A', fontSize: 18, fontWeight: '600' },
-  primary: { marginTop: 8, minHeight: 54, backgroundColor: '#285F85', alignItems: 'center', justifyContent: 'center', borderRadius: 12 },
-  primaryText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
-  pressed: { opacity: 0.8 },
+  lastRound: { gap: 8, paddingVertical: 16, borderTopWidth: 1, borderColor: theme.colors.border },
+  clear: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center' },
   note: { fontSize: 13, lineHeight: 20, color: '#526677' },
   cameraLink: { paddingVertical: 20, borderTopWidth: 1, borderColor: '#CFDCE4', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', minHeight: 72 },
   linkText: { color: '#285F85', fontSize: 15, fontWeight: '600', padding: 12 },

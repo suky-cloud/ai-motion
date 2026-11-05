@@ -14,6 +14,14 @@
 
 手机代码 `pnpm exec tsc --noEmit` 通过；`expo export --platform android` 已产出生产 Hermes bundle，证明跨目录模块可打包。本轮用户无法接入手机，未进行新版 APK 安装、UI 截图评审、触控或真机游戏验证。
 
+## 基础框架自动化验证（0.2.0）
+
+本轮总计 44 项通过、0 失败；类型检查通过。新增覆盖最新帧读取、payload 深拷贝与校验、旧会话 token 隔离、UI / 模型异频输入复用与过期清除、异常暂停与恢复、尺寸变化清空旧坐标、会话结束和销毁、停止失败、未来时钟事件、首页结果与路由隔离。
+
+Android release lint 的 32.2.1 工具在本次官方仓库下载中未找到，该检查待补做；内部测试包使用显式 SkipNativeLint 选项，不能称为 lint 通过。独立测试 APK 的实际构建结果记录在 P0_REPORT.md；手机测试全部留给后续 DEVICE_TEST_CHECKLIST.md 执行，不将 11 月 2 日相机结果自动算作本次框架回归通过。
+
+最终内部 release APK 构建成功；apksigner 验证通过，签名与相机基线一致；已检查 versionName=0.2.0 / versionCode=2、arm64-v8a、非空内置 JS 与原生库、相机权限及缺少麦克风 / 外部存储权限。APK 首次启动、断网运行和实际手机流程仍未运行。
+
 ## 最小相机真机验证（2026-11-02）
 
 设备：荣耀 Magic7 Pro / PTP-AN10，Android 17 / API 37，arm64-v8a。

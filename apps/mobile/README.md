@@ -2,6 +2,8 @@
 
 当前包括首页、Motion Catch 模拟体验、结果页和独立前置摄像头检查页。模拟模式通过拖动或左右按钮产生合成姿态，再经过与未来真实识别共用的运动控制和游戏核心。竖屏运行，无录像、上传或模型推理。
 
+0.2.0 将输入生命周期、计时与游戏编排移入 session-core，由 useMotionSession 连接 React；首页可查看或清除本次完成结果，页面异常提供首页恢复入口。结构与原生适配边界见 docs/ARCHITECTURE.md。
+
 首页“开始模拟体验” → “开始这一轮” → 拖动或左右按钮 → 暂停 / 继续 / 结束 → 结果与重开。调试面板可切换正常 / 输入丢失 / 仅上半身，以及合成骨骼显示。模式始终标明“未使用摄像头识别”。
 
 ## Windows 本地运行
@@ -41,7 +43,13 @@ pnpm exec expo install --check
 pnpm exec expo export --platform android --output-dir ../../.local/mobile-export
 ```
 
-根目录 `node --test tests/*.test.ts` 可在没有手机时验证全部纯逻辑。11 月 5 日这轮类型检查、28 项自动化测试及 Android 生产代码打包通过；新版布局、触控和后台暂停尚未经真机确认。
+根目录 `node --test tests/*.test.ts` 可在没有手机时验证全部纯逻辑。当前类型检查和 44 项自动化测试通过；新版布局、触控和后台暂停尚未经真机确认。可逐项填写的检查步骤见 docs/DEVICE_TEST_CHECKLIST.md。
+
+## 内部离线测试包
+
+在原仓库根目录执行 `./scripts/build-android-test.ps1 -BuildRoot C:/am-p0`，生成 arm64 release 变体测试包到 `.local/apk/`。脚本自动保留完整目录结构，使用开发签名，不用于商店正式发布。可用 `-DebugKeystore` 指定旧开发版签名文件，以保持更新安装一致；文件不入 Git。
+
+本次构建遇到 Google 仓库缺失 lint 工具时，使用 `-SkipNativeLint` 将该检查明确留待后续；正常情况下不要传该选项。原生配置插件让 release 中共有依赖与 debug 使用一致版本。安装包实际构建状态与未完成检查见 P0_REPORT.md。
 
 手机上检查：开启摄像头并授权 → 前置预览 → 暂停 → 恢复 → 结束 → 重新开启 → 返回键关闭 → 切后台确认摄像头停止。权限拒绝后可重试或进入系统设置。确认摄像头隐私指示在暂停 / 退出后关闭。
 

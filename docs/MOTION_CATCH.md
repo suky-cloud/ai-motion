@@ -13,6 +13,8 @@
   → 游戏界面 / 结果页
 ```
 
+0.2.0 更新：该链路现由 session-core 的 MotionSession 统一编排；界面仅通过 useMotionSession 发送命令并显示快照。模拟源和未来原生事件源共用 PoseSource 接口。详见 ARCHITECTURE.md。
+
 未来模型适配层应输出相同 PoseFrame，使用 source=pose，不将具体 SDK 对象传入游戏。当前模拟模式不会打开摄像头，也不初始化模型。
 
 ## 模块边界
@@ -47,7 +49,7 @@
 
 ## 验证与边界
 
-根目录执行 `node --test tests/*.test.ts`：28 项通过。包含一轮完整的合成姿态 → 身体控制 → 30 秒结束集成测试。
+根目录执行 `node --test tests/*.test.ts`：当前 44 项通过。包含完整的合成姿态 → 会话 → 身体控制 → 30 秒结束集成测试，以及旧会话隔离、输入异常、结果和路由测试。
 
 应用目录执行 `pnpm exec tsc --noEmit`；Android 生产 JS / Hermes 打包使用 `pnpm exec expo export --platform android --output-dir ../../.local/mobile-export`。
 

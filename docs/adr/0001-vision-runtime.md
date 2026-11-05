@@ -32,3 +32,9 @@
 已实现独立 motion-core / game-core，并以 source=simulation 的合成 PoseFrame 驱动模拟体验，source=pose 保留给未来适配器。游戏会拒绝来源与当前模式不匹配的输入；模拟界面明确标注来源，不以合成骨骼代表真实模型输出。
 
 变换约定、250ms 新鲜度、全身门控与控制失效策略记录于 MOTION_CATCH.md。相关纯逻辑与整轮集成测试通过，真实帧输入与显示对齐尚未验证。未改变原生视觉运行时方向。
+
+## 0.2.0 会话与输入框架
+
+现由 MotionSession 统一编排 PoseSource、控制器和游戏，React 只承担生命周期与界面。SimulationPoseSource 供当前模拟体验；LatestPoseSource 提供已校验的自有原生事件入口，单槽保留最新帧并隔离会话 token。该入口不初始化 SDK，也不代表 MediaPipe 已接通。
+
+后续原生适配器必须完成时钟对齐、原始帧格式转换、模型与线程管理，并负责实际硬件释放；未来事件统一经该入口进入现有游戏。接入前无需更换游戏规则或页面计时实现。详细边界见 ARCHITECTURE.md。
