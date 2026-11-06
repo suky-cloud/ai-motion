@@ -1,10 +1,10 @@
 import type { RoundResult } from '../../../../packages/session-core/src/session.ts';
 
 /** Application navigation stays independent of the React screen tree. */
-export type Route = { name: 'home' } | { name: 'camera' | 'simulation'; key: number };
+export type Route = { name: 'home' } | { name: 'camera' | 'simulation' | 'computer'; key: number };
 export type LastRound = { schemaVersion: 1; result: RoundResult; completedAt: string };
 export type ApplicationState = { route: Route; nextRouteKey: number; lastRound: LastRound | null };
-export type AppAction = { type: 'open'; screen: 'camera' | 'simulation' } | { type: 'home' } |
+export type AppAction = { type: 'open'; screen: 'camera' | 'simulation' | 'computer' } | { type: 'home' } |
   { type: 'record-result'; result: RoundResult; completedAt: string } | { type: 'clear-result' };
 
 export const initialAppState: ApplicationState = { route: { name: 'home' }, nextRouteKey: 1, lastRound: null };

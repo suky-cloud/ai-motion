@@ -1,0 +1,33 @@
+{
+  "name": "ai-motion-desktop",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "build": "tsc --noEmit && vite build && node scripts/build.mjs",
+    "start": "electron .",
+    "test": "node --test tests/*.test.ts",
+    "package": "pnpm build && node scripts/package.mjs"
+  },
+  "main": "dist-main/main.cjs",
+  "dependencies": {
+    "qrcode": "1.5.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "ws": "8.22.1"
+  },
+  "devDependencies": {
+    "@electron/packager": "^19.0.1",
+    "@types/node": "^24.0.0",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/ws": "^8.18.1",
+    "electron": "45.2.3",
+    "esbuild": "0.28.2",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "vite": "8.3.6"
+  }
+}

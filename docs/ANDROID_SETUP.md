@@ -1,5 +1,7 @@
 # Windows Android 开发环境
 
+2026-11-06：在 Codex MSIX 环境中，实际 SDK 可能位于 `%LOCALAPPDATA%/Packages/OpenAI.Codex_2p2nqsd0c76g0/LocalCache/Local/Android/Sdk`。`android-env.ps1` 已增加自动查找，仍优先尊重显式 `ANDROID_HOME`。本轮复用该 SDK 完成 0.3.0 原生包构建，没有重新要求手机连接。
+
 目标：Android 真机上的 Expo Development Build / 原生摄像头验证。
 
 ## 当前安装进度（2026-11-02）

@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createTelemetry } from '../sync/trainingSync';
 import { Pressable, ScrollView, StatusBar, StyleSheet, Switch, Text, useWindowDimensions, View } from 'react-native';
 import type { GestureResponderEvent } from 'react-native';
 import { clamp } from '../../../../packages/motion-core/src/index.ts';
@@ -25,6 +26,11 @@ export default function MotionCatchScreen({ onClose, onResult }: { onClose: () =
   const [mode, setMode] = useState<SimulationMode>('tracked');
   const point = useRef<Point>({ x: 0.5, y: 0.5 });
   const { snapshot, command, withSource } = useMotionSession(createSource, board, 'simulation', onResult);
+  const telemetry = useRef<ReturnType<typeof createTelemetry> | null>(null);
+  const [storageError, setStorageError] = useState(false);
+  if (!telemetry.current) telemetry.current = createTelemetry();
+  useEffect(() => { try { telemetry.current!.capture(snapshot); } catch { setStorageError(true); } }, [snapshot]);
+  useEffect(() => () => { try { telemetry.current?.leave(); } catch {} }, []);
   const { game, result } = snapshot;
 
   function restart() {
@@ -59,6 +65,7 @@ export default function MotionCatchScreen({ onClose, onResult }: { onClose: () =
         <Text style={styles.subtitle}>30 秒内，左右移动接住目标。</Text>
       </View>
       <Text style={styles.simulation}>模拟体验 · 未使用摄像头识别</Text>
+      {storageError && <Text accessibilityRole="alert" style={styles.guidance}>本地记录暂时无法保存，当前仍可体验。请稍后检查“连接电脑”页面。</Text>}
       {snapshot.issue && <Text accessibilityRole="alert" style={styles.guidance}>输入模块出现问题，请重试或返回首页。</Text>}
       {result ? <>
         <View style={styles.result}>

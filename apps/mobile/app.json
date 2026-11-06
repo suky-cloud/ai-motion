@@ -3,14 +3,21 @@
     "name": "AI Motion",
     "slug": "ai-motion",
     "scheme": "aimotion",
-    "plugins": ["./plugins/withAndroidBaseline"],
-    "version": "0.2.0",
+    "plugins": [
+      "./plugins/withAndroidBaseline",
+      "expo-sqlite",
+      "./plugins/withLocalSync"
+    ],
+    "version": "0.3.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "android": {
       "package": "com.sukycloud.aimotion",
-      "versionCode": 2,
-      "permissions": ["android.permission.CAMERA"],
+      "versionCode": 3,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_LOCAL_NETWORK"
+      ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -18,7 +25,9 @@
       ]
     },
     "ios": {
-      "infoPlist": { "NSCameraUsageDescription": "AI Motion 使用摄像头在本机进行运动互动。" }
+      "infoPlist": {
+        "NSCameraUsageDescription": "AI Motion 使用摄像头在本机进行运动互动。"
+      }
     }
   }
 }

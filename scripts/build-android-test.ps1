@@ -19,6 +19,7 @@ if (Test-Path -LiteralPath $buildPath) {
   Set-Content -LiteralPath $marker -Value $repoRoot -Encoding utf8
 }
 if ($DebugKeystore -and -not (Test-Path -LiteralPath $DebugKeystore)) { throw 'Requested signing file not found.' }
+$signingBytes = if ($DebugKeystore) { [IO.File]::ReadAllBytes([IO.Path]::GetFullPath($DebugKeystore)) } else { $null }
 $mobileBuild = Join-Path $buildPath 'apps/mobile'
 New-Item -ItemType Directory -Force $mobileBuild | Out-Null
 foreach ($name in @('package.json','pnpm-lock.yaml','pnpm-workspace.yaml','metro.config.js','app.json','index.ts','tsconfig.json')) {
@@ -26,11 +27,16 @@ foreach ($name in @('package.json','pnpm-lock.yaml','pnpm-workspace.yaml','metro
 }
 Copy-Item -LiteralPath (Join-Path $repoRoot 'apps/mobile/src') -Destination $mobileBuild -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $repoRoot 'apps/mobile/plugins') -Destination $mobileBuild -Recurse -Force
-foreach ($name in @('motion-core','game-core','session-core','vision-contract')) {
+foreach ($name in @('motion-core','game-core','session-core','vision-contract','training-core')) {
   $packageBuild = Join-Path $buildPath "packages/$name"
   New-Item -ItemType Directory -Force $packageBuild | Out-Null
   Copy-Item -LiteralPath (Join-Path $repoRoot "packages/$name/src") -Destination $packageBuild -Recurse -Force
 }
+# Gradle's JS input tree is rooted at apps/mobile; shared sources live outside it.
+# Include a deterministic fingerprint in the copied entry point so shared changes invalidate the bundle.
+$sharedHashes = (Get-ChildItem -LiteralPath (Join-Path $repoRoot 'packages') -Recurse -File -Filter '*.ts' | Sort-Object FullName | Get-FileHash -Algorithm SHA256).Hash -join ':'
+$sharedFingerprint = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($sharedHashes)))
+[IO.File]::AppendAllText((Join-Path $mobileBuild 'index.ts'), "`n// Shared sources: $sharedFingerprint`n", [Text.UTF8Encoding]::new($false))
 . (Join-Path $PSScriptRoot 'android-env.ps1')
 $env:CI = '1'
 Push-Location -LiteralPath $mobileBuild
@@ -39,7 +45,7 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
   pnpm exec expo prebuild --platform android --no-install
   if ($LASTEXITCODE -ne 0) { throw 'Android project generation failed.' }
-  if ($DebugKeystore) { Copy-Item -LiteralPath $DebugKeystore -Destination 'android/app/debug.keystore' -Force }
+  if ($signingBytes) { [IO.File]::WriteAllBytes((Join-Path $mobileBuild 'android/app/debug.keystore'), $signingBytes) }
   $gradleProperties = Join-Path $mobileBuild 'android/gradle.properties'
   $propertiesText = [IO.File]::ReadAllText($gradleProperties)
   $propertiesText = [regex]::Replace($propertiesText, '(?m)^android\.enableMinifyInReleaseBuilds=.*$', 'android.enableMinifyInReleaseBuilds=false')

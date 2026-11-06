@@ -8,6 +8,10 @@ node_modules/
 .turbo/
 coverage/
 dist/
+/apps/desktop/dist-main/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
 build/
 *.log
 *.tsbuildinfo

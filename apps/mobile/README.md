@@ -54,3 +54,8 @@ pnpm exec expo export --platform android --output-dir ../../.local/mobile-export
 手机上检查：开启摄像头并授权 → 前置预览 → 暂停 → 恢复 → 结束 → 重新开启 → 返回键关闭 → 切后台确认摄像头停止。权限拒绝后可重试或进入系统设置。确认摄像头隐私指示在暂停 / 退出后关闭。
 
 这些步骤只有在真实手机执行后才能标记通过；类型和打包通过不代表摄像头功能验收完成。
+# 0.3.0 电脑同步扩展
+
+2026-11-06：新增“连接电脑”、手机 SQLite 历史、配对深链接和断线补传。首页本次结果仍是内存摘要，完整历史单独持久化。该版本新增 expo-sqlite 原生模块，必须重新构建 APK，不能只替换 0.2.0 的 JS。
+
+本轮类型检查、生产导出与原生 APK 构建通过；已生成 `.local/apk/ai-motion-0.3.0-test.apk`，检查包含 SQLite 动态库。SDK 在 Codex MSIX 应用缓存内找回，环境脚本已兼容。原生 release lint 延续内部测试暂缓项，未做真机联机验证。已有 0.2.0 测试包不含同步功能。电脑工作台可独立使用，详见 [使用说明](../../docs/DESKTOP_GUIDE.md) 与 [同步测试清单](../../docs/DESKTOP_TEST_CHECKLIST.md)。

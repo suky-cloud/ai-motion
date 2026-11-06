@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
-import { BackHandler, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { BackHandler, Linking, Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import ComputerScreen from './sync/ComputerScreen';
 import CameraScreen from './camera/CameraScreen';
 import MotionCatchScreen from './games/MotionCatchScreen';
 import ScreenBoundary from './application/ScreenBoundary';
@@ -11,6 +12,13 @@ import { theme } from './ui/theme';
 
 export default function App() {
   const [state, dispatch] = useReducer(appReducer, initialAppState);
+  const [pairingLink, setPairingLink] = useState('');
+  useEffect(() => {
+    const receive = (url: string | null | undefined) => { if (url?.startsWith('aimotion://pair?')) { setPairingLink(url); dispatch({ type: 'open', screen: 'computer' }); } };
+    void Linking.getInitialURL().then(receive);
+    const listener = Linking.addEventListener('url', event => receive(event.url));
+    return () => listener.remove();
+  }, []);
   const home = useCallback(() => dispatch({ type: 'home' }), []);
   const recordResult = useCallback((result: RoundResult) => {
     dispatch({ type: 'record-result', result, completedAt: new Date().toISOString() });
@@ -23,15 +31,15 @@ export default function App() {
     });
     return () => listener.remove();
   }, [state.route.name, home]);
-  const screen = state.route.name === 'camera' ? <CameraScreen onClose={home} /> :
+  const screen = state.route.name === 'computer' ? <ComputerScreen onClose={home} pairingLink={pairingLink} /> : state.route.name === 'camera' ? <CameraScreen onClose={home} /> :
     state.route.name === 'simulation' ? <MotionCatchScreen onClose={home} onResult={recordResult} /> :
       <HomeScreen lastRound={state.lastRound} onSimulation={() => dispatch({ type: 'open', screen: 'simulation' })}
-        onCamera={() => dispatch({ type: 'open', screen: 'camera' })} onClear={() => dispatch({ type: 'clear-result' })} />;
+        onCamera={() => dispatch({ type: 'open', screen: 'camera' })} onComputer={() => dispatch({ type: 'open', screen: 'computer' })} onClear={() => dispatch({ type: 'clear-result' })} />;
   return <ScreenBoundary key={`${state.route.name}-${state.nextRouteKey}`} onRecover={home}>{screen}</ScreenBoundary>;
 }
 
-function HomeScreen({ lastRound, onSimulation, onCamera, onClear }: {
-  lastRound: LastRound | null; onSimulation: () => void; onCamera: () => void; onClear: () => void;
+function HomeScreen({ lastRound, onSimulation, onCamera, onComputer, onClear }: {
+  lastRound: LastRound | null; onSimulation: () => void; onCamera: () => void; onComputer: () => void; onClear: () => void;
 }) {
   return (
     <View style={styles.page}>
@@ -57,9 +65,13 @@ function HomeScreen({ lastRound, onSimulation, onCamera, onClear }: {
         {lastRound && <View style={styles.lastRound}>
           <Text style={styles.sectionTitle}>刚才那一轮</Text>
           <Text style={styles.description}>{lastRound.result.source === 'simulation' ? '模拟体验' : '身体互动'}接住 {lastRound.result.hits} 次，得分 {lastRound.result.score}。</Text>
-          <Text style={styles.note}>只在本次打开期间保留，不上传。</Text>
+          <Text style={styles.note}>这里显示本次结果，完整本地记录可在“连接电脑”中查看。</Text>
           <Pressable accessibilityRole="button" onPress={onClear} style={styles.clear}><Text style={styles.linkText}>清除本次结果</Text></Pressable>
         </View>}
+        <Pressable accessibilityRole="button" style={styles.cameraLink} onPress={onComputer}>
+          <View><Text style={styles.sectionTitle}>连接电脑</Text><Text style={styles.note}>本地训练记录与工作台同步</Text></View>
+          <Text style={styles.linkText}>打开</Text>
+        </Pressable>
         <Pressable accessibilityRole="button" style={styles.cameraLink} onPress={onCamera}>
           <View><Text style={styles.sectionTitle}>检查摄像头</Text><Text style={styles.note}>前置预览与权限设置</Text></View>
           <Text style={styles.linkText}>打开</Text>
