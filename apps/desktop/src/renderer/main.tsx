@@ -87,6 +87,14 @@ const nav = [
   { id: "devices", label: "设备与设置", icon: "⚙" },
 ];
 
+function sourceLabel(source: TrainingRecord["source"]) {
+  return {
+    simulation: "模拟训练",
+    pose: "人体输入",
+    ball: "球体识别实验",
+    video: "本地视频检查",
+  }[source];
+}
 function App() {
   const [data, setData] = useState<Snapshot | null>(null);
   const [page, setPage] = useState("today");
@@ -154,7 +162,8 @@ function App() {
       live.phase === "running"
     : false;
   const real = data.records.filter(
-    (r) => r.source === "pose" && r.phase === "finished",
+    (r) =>
+      (r.source === "pose" || r.source === "ball") && r.phase === "finished",
   );
   const edit = (plan?: TrainingPlan) => {
     setDraft(structuredClone(plan ?? template()));
@@ -195,7 +204,7 @@ function App() {
         </nav>
         <div className="sidebar-bottom">
           <span className="status-dot" /> 数据保存在这台电脑
-          <small>本地工作台 0.3.0</small>
+          <small>本地工作台 0.4.0</small>
         </div>
       </aside>
       <main className="workspace">
@@ -620,7 +629,7 @@ function App() {
             <div className="filter-bar" role="group" aria-label="记录来源筛选">
               {[
                 ["all", "全部"],
-                ["pose", "实际输入"],
+                ["actual", "实际输入"],
                 ["simulation", "模拟训练"],
               ].map(([id, label]) => (
                 <button
@@ -635,7 +644,13 @@ function App() {
             <div className="history-layout">
               <section>
                 {data.records
-                  .filter((r) => filter === "all" || r.source === filter)
+                  .filter(
+                    (r) =>
+                      filter === "all" ||
+                      (filter === "actual"
+                        ? ["pose", "ball"].includes(r.source)
+                        : r.source === filter),
+                  )
                   .map((r) => (
                     <RecordRow
                       key={r.sessionId}
@@ -645,7 +660,11 @@ function App() {
                     />
                   ))}
                 {!data.records.some(
-                  (r) => filter === "all" || r.source === filter,
+                  (r) =>
+                    filter === "all" ||
+                    (filter === "actual"
+                      ? ["pose", "ball"].includes(r.source)
+                      : r.source === filter),
                 ) && (
                   <p className="empty-copy">
                     这里还没有记录。可以先运行一次模拟计划。
@@ -655,9 +674,7 @@ function App() {
               <aside className="record-detail">
                 {record ? (
                   <>
-                    <span className="badge">
-                      {record.source === "simulation" ? "模拟训练" : "手机输入"}
-                    </span>
+                    <span className="badge">{sourceLabel(record.source)}</span>
                     <h2>{record.activity}</h2>
                     <p className="muted">
                       {new Date(record.startedAt).toLocaleString("zh-CN")}
@@ -667,6 +684,20 @@ function App() {
                       <dd>{duration(record.activeMs)}</dd>
                       <dt>次数 / 命中</dt>
                       <dd>{record.reps}</dd>
+                      {record.dribble && (
+                        <>
+                          <dt>最长连续运球</dt>
+                          <dd>{record.dribble.longestStreak} 次</dd>
+                          <dt>目标命中</dt>
+                          <dd>{record.dribble.targetHits} 次</dd>
+                          <dt>运球节奏</dt>
+                          <dd>
+                            {record.dribble.cadence === null
+                              ? "数据不足"
+                              : `${record.dribble.cadence.toFixed(0)} 次 / 分钟`}
+                          </dd>
+                        </>
+                      )}
                       <dt>估算热量</dt>
                       <dd>
                         {record.estimatedKcal === null
@@ -880,7 +911,7 @@ function RecordRow({
       <span className="record-name">
         <strong>{r.activity}</strong>
         <small>
-          {r.source === "simulation" ? "模拟训练" : "手机输入"}
+          {sourceLabel(r.source)}
           {r.phase !== "finished" ? " · 阶段记录" : ""}
         </small>
       </span>

@@ -27,7 +27,9 @@ foreach ($name in @('package.json','pnpm-lock.yaml','pnpm-workspace.yaml','metro
 }
 Copy-Item -LiteralPath (Join-Path $repoRoot 'apps/mobile/src') -Destination $mobileBuild -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $repoRoot 'apps/mobile/plugins') -Destination $mobileBuild -Recurse -Force
-foreach ($name in @('motion-core','game-core','session-core','vision-contract','training-core')) {
+Copy-Item -LiteralPath (Join-Path $repoRoot 'apps/mobile/modules') -Destination $mobileBuild -Recurse -Force
+& (Join-Path $PSScriptRoot 'prepare-ball-model.ps1') -AssetDirectory (Join-Path $mobileBuild 'modules/ball-vision/android/src/main/assets')
+foreach ($name in @('motion-core','game-core','session-core','vision-contract','training-core','basketball-core')) {
   $packageBuild = Join-Path $buildPath "packages/$name"
   New-Item -ItemType Directory -Force $packageBuild | Out-Null
   Copy-Item -LiteralPath (Join-Path $repoRoot "packages/$name/src") -Destination $packageBuild -Recurse -Force

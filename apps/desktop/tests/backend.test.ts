@@ -206,3 +206,28 @@ test("saved AI review survives backup merge without carrying the API key", () =>
   db.close();
   other.close();
 });
+test("live ball telemetry persists dribble detail independently from synthetic sessions", () => {
+  const db = new Store(":memory:");
+  const dribble = {
+    mode: "count",
+    targetHits: 0,
+    longestStreak: 3,
+    cadence: 90,
+    rhythmVariation: null,
+  };
+  db.ingest(
+    {
+      ...sample,
+      sessionId: "real-ball-session",
+      source: "ball",
+      phase: "finished",
+      reps: 3,
+      dribble,
+    },
+    "phone",
+  );
+  assert.equal(db.records()[0].source, "ball");
+  assert.equal(db.records()[0].dribble!.longestStreak, 3);
+  assert.equal(db.records()[0].estimatedKcal, null);
+  db.close();
+});

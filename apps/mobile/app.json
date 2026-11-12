@@ -8,18 +8,19 @@
       "expo-sqlite",
       "./plugins/withLocalSync"
     ],
-    "version": "0.3.0",
+    "version": "0.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "android": {
       "package": "com.sukycloud.aimotion",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.ACCESS_LOCAL_NETWORK"
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
+        "android.permission.READ_PHONE_STATE",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ]

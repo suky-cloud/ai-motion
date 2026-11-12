@@ -1,0 +1,10 @@
+EfficientDet-Lite0 int8 v1, published by TensorFlow, trained on COCO 2017.
+Model license: Apache License 2.0; see APACHE-2.0.txt.
+Publisher metadata: https://www.kaggle.com/models/tensorflow/efficientdet/TfLite/lite0-int8
+Publisher API verified 2026-11-12: https://www.kaggle.com/api/v1/models/list?search=efficientdet
+Model source: https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite
+SHA-256: 0720bf247bd76e6594ea28fa9c6f7c5242be774818997dbbeffc4da460c723bb
+This generic detector labels sports ball; it does not independently identify basketballs or assess form.
+The model binary is downloaded at build time and not checked into the source repository.
+No training images or videos are distributed.
+The app's Android CPU integration uses TensorFlow Lite Task Vision (Apache-2.0).

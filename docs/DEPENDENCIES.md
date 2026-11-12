@@ -22,3 +22,6 @@ React / React Native 版本依据 Expo 官方 blank-typescript 模板 58.0.31 �
 电脑独立工程 `apps/desktop` 使用锁定的 Electron 45.2.3、React / React DOM 19.3.1、ws 8.22.1、qrcode 1.5.4，构建使用 Vite 8.3.6、esbuild 0.28.2、TypeScript 6.0.3、@electron/packager 19.1.1。Electron 实测内置 Node 24.22.2、SQLite 3.53.4，直接使用 `node:sqlite`，不新增原生数据库编译依赖。第三方许可见 `apps/desktop/THIRD_PARTY_NOTICES.md`。
 
 手机通过 Expo 官方安装器新增 `expo-sqlite ~58.0.15` 与对应配置插件，已完成原生重建；SQLite 使用模块附带的本地 Maven 预编译库，已检查 APK 内动态库。本地插件 `withLocalSync` 将 Android compile / target 设为 37、声明局域网运行时权限并启用本地 WS 明文网络。该权限要求与 [Android 官方规则](https://developer.android.com/privacy-and-security/local-network-permission) 对齐。SDK 在 Codex MSIX 缓存内找回，原生 release lint 暂缓；未做真机联机验收。
+# 0.4.0 追加（2026-11-12）
+
+新增 Expo 本地 Android 模块 ball-vision：TensorFlow Lite Task Vision 0.4.4（Apache-2.0）、CameraX 1.7.0-alpha03（匹配既有 VisionCamera）。MediaPipe / 新 LiteRT 构件在本环境无法获取，未使用不明镜像。模型 EfficientDet-Lite0 int8 v1 的 TensorFlow 发布许可、SHA-256 和 4 KB JNI 对齐限制见 `BASKETBALL_TRAINING.md` 与模块 MODEL_NOTICE.txt。新增 expo-document-picker ~58.0.5、react-native-safe-area-context ~5.11.1；需重建原生包。电话状态权限由新依赖带入但训练不需要，已明确阻止，不申请。

@@ -1,5 +1,9 @@
 # AI Motion 基础框架
 
+## 0.4.0 运球分层
+
+`packages/basketball-core` 负责球框校验、单球周期、异常轨迹、会话与左右目标。手机 `src/basketball` 编排相机 / 模拟 / 视频，`modules/ball-vision` 为独立 CameraX + TensorFlow Lite Expo 原生模块，与保留的 VisionCamera 页按路由互斥挂载。底部 tab 与详情 route 分离，退出回所属分区。训练协议追加 ball / video 来源与校验后的 dribble 摘要，电脑 0.4.0 支持接收。视频不计实际运动，轨迹不作为姿态证据。兼容与验收边界见 `BASKETBALL_TRAINING.md`。
+
 ## 0.3.0 并行电脑端扩展
 
 2026-11-06 新增 `apps/desktop`：Electron 主进程负责 SQLite、局域网 WebSocket、文件对话框与 AI 请求；隔离的 React 页面通过窄 IPC 白名单读取数据。页面关闭 Node 集成与网络请求，拒绝新窗口、导航和权限申请。生产程序不开放调试端口。

@@ -23,7 +23,7 @@ writeFileSync(
   JSON.stringify({
     name: "ai-motion-desktop",
     productName: "AI Motion",
-    version: "0.3.0",
+    version: "0.4.0",
     main: "dist-main/main.cjs",
   }),
 );

@@ -1,0 +1,18 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+group = 'expo.modules.ballvision'
+version = '0.1.0'
+android {
+  namespace 'expo.modules.ballvision'
+  defaultConfig { versionCode 1; versionName '0.1.0' }
+  androidResources { noCompress += ['tflite'] }
+}
+dependencies {
+  implementation 'androidx.camera:camera-core:1.7.0-alpha03'
+  implementation 'androidx.camera:camera-camera2:1.7.0-alpha03'
+  implementation 'androidx.camera:camera-lifecycle:1.7.0-alpha03'
+  implementation 'androidx.camera:camera-view:1.7.0-alpha03'
+  implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.4'
+}

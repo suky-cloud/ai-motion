@@ -2,7 +2,7 @@
 
 通过手机摄像头识别人体姿态，用身体移动完成简单运动互动。
 
-**当前状态：0.3.0 本地电脑工作台与 Android 内部测试包均已生成。** 可以编辑计划、模拟运行、保存训练历史、导入导出备份，主动调用兼容 AI 接口。手机新增 SQLite 记录和局域网同步，已完成原生构建与包内容检查；手机连接尚未验收。真实姿态识别仍待接入。
+**当前状态：0.4.0 运球实验与手机底部导航已实现。** 手机采用首页 / 训练 / 记录 / 我的；新增本地球体检测、运球估计、左右目标、节奏和视频检查，并同步到本地电脑工作台。APK 已生成，手机模型运行与准确率未验收。投篮 / 进球、真实人体姿态和规范评分尚未接入。详见 [篮球训练与测试清单](docs/BASKETBALL_TRAINING.md)。
 
 本机双击根目录 `启动电脑工作台.cmd` 即可使用已打包程序。其他开发者从 `apps/desktop` 运行 `pnpm install --frozen-lockfile`、`pnpm build`、`pnpm start`，不需要部署云服务器。详见 [电脑端使用说明](docs/DESKTOP_GUIDE.md)。
 
@@ -23,6 +23,7 @@
 - [手机应用运行说明](apps/mobile/README.md)
 - [电脑工作台与 AI 接口使用说明](docs/DESKTOP_GUIDE.md)
 - [电脑与手机同步测试清单](docs/DESKTOP_TEST_CHECKLIST.md)
+- [运球实验、模型许可与测试清单](docs/BASKETBALL_TRAINING.md)
 - [手机基线依赖](docs/DEPENDENCIES.md)
 - [运动控制与游戏实现](docs/MOTION_CATCH.md)
 - [基础框架与后续接入边界](docs/ARCHITECTURE.md)
@@ -36,7 +37,7 @@
 
 ## 运行与设备要求
 
-运动、游戏、会话、路由、训练协议与帧契约测试可用 Node.js 24+ 执行 `node --test tests/*.test.ts`，无需安装依赖，当前 54 项通过。桌面工程另有 8 项 SQLite / WebSocket / AI 集成测试；真实 Electron 交互及打包程序启动已验证。
+运动、游戏、会话、底部导航、运球和协议测试可用 Node.js 24+ 执行 `node --test tests/*.test.ts`，无需安装依赖，当前 69 项通过。桌面另有 9 项集成测试，桌面真实操作流程和打包启动已验证。这些结果不证明真实运球准确率。
 
 手机应用位于 `apps/mobile`，使用 pnpm 11.25.0。先激活 `scripts/android-env.ps1`，进入应用目录运行 `pnpm install --frozen-lockfile`、`pnpm exec expo prebuild --platform android --no-install`、`pnpm exec expo run:android --device`。Windows 必须使用短、无空格的真实项目路径，详见手机应用说明。
 

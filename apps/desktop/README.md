@@ -1,6 +1,6 @@
 # AI Motion 本地电脑工作台
 
-Electron + React + SQLite，版本 0.3.0。完整说明与边界见 [使用说明](../../docs/DESKTOP_GUIDE.md)，人工验收见 [测试清单](../../docs/DESKTOP_TEST_CHECKLIST.md)。
+Electron + React + SQLite，版本 0.4.0。支持手机球体训练来源、最长连续、目标命中和节奏详情；普通工作台用法见 [使用说明](../../docs/DESKTOP_GUIDE.md)，新增功能与实测见 [篮球训练](../../docs/BASKETBALL_TRAINING.md)。
 
 ```powershell
 pnpm install --frozen-lockfile
